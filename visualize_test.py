@@ -1,6 +1,7 @@
 # %%
 import numpy as np
 import math
+import random as rand
 import copy
 
 # %%
@@ -344,13 +345,39 @@ class Cube:
                         
 
         return state
+    def generate_scramble(self,length):
+        scramble=""
+        last_move=None
+        opposite_used=False
+
+        for i in range(length):
+            available_face_array=[]
+            if last_move==None:
+                available_face_array = Faces.face_array
+            else:
+                for face in Faces.face_array:
+                    if face.dir == last_move.dir:continue
+                    elif opposite_used and -face.dir == last_move.dir:continue
+
+                    available_face_array.append(face)
+                    
+            face = available_face_array[rand.randint(0,len(available_face_array)-1)]
+            amount = notation_dict_reverse[rand.randint(1,len(notation_dict_reverse))]
+            move = face.name+amount
+
+            scramble+=move+" "
+
+            if last_move==None or face.dir == -last_move.dir: opposite_used=True
+            else: opposite_used=False
+            last_move=face
+        return scramble
+
+
     
 #%%
 
 if __name__ == "__main__":
-    cube_2x2x2 = Cube('3x3x3')
+    cube_3x3x3 = Cube('3x3x3')
     
-    cube_2x2x2.execute("L' U' F L2 F2 D F R2 B2 L' B2 L' U2 F2 B2 D2 B2 R")
-    print(cube_2x2x2.cube_to_array())
-
-    print(cube_2x2x2.get_state())
+    cube_3x3x3.execute(cube_3x3x3.generate_scramble(100))
+    print(cube_3x3x3.cube_to_array())

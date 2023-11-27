@@ -208,6 +208,13 @@ class Cube:
             yLayers = Layer_dimension(Axis.y, [ ['U', Axis.y, turn_angle, 1], ['E', Axis._y, turn_angle, 0], ['D', Axis._y, turn_angle, -1] ])
             zLayers = Layer_dimension(Axis.z, [ ['F', Axis.z, turn_angle, 1], ['S', Axis.z , turn_angle, 0], ['B', Axis._z, turn_angle, -1] ])
             layer_dimension_array = [xLayers,yLayers,zLayers]
+        if name == '4x4x4':
+            self.size = 4
+            turn_angle = math.pi/2
+            xLayers = Layer_dimension(Axis.x, [ ['R', Axis.x, turn_angle, 1.5], ['r', Axis.x, turn_angle, 0.5], ['l', Axis._x, turn_angle, -0.5], ['L', Axis._x, turn_angle, -1.5] ])
+            yLayers = Layer_dimension(Axis.y, [ ['U', Axis.y, turn_angle, 1.5], ['u', Axis.y, turn_angle, 0.5], ['d', Axis._y, turn_angle, -0.5], ['D', Axis._y, turn_angle, -1.5] ])
+            zLayers = Layer_dimension(Axis.z, [ ['F', Axis.z, turn_angle, 1.5], ['f', Axis.z , turn_angle, 0.5], ['b', Axis._z, turn_angle, -0.5], ['B', Axis._z, turn_angle, -1.5] ])
+            layer_dimension_array = [xLayers,yLayers,zLayers]
 
         self.piece_holder_array = []
         self.layer_array = []
@@ -273,7 +280,16 @@ class Cube:
     def execute(self,moves: str):
         move_array = moves.rstrip().split(' ')
         for move in move_array:
-            self.turn(move[0],notation_dict[move[1:]])
+            move_degree = notation_dict[move[1:]]
+            self.turn(move[0],move_degree)
+
+    def reverse_execute(self,moves: str):
+        move_array = moves.rstrip().split(' ')
+        for move in move_array:
+            move_degree = notation_dict[move[1:]]
+            if move_degree == 1: move_degree = 3
+            elif move_degree == 3: move_degree = 1
+            self.turn(move[0],move_degree)
     
     def face_to_array(self, face_name: str):
         face = Faces.get_face_by_name(face_name)
@@ -319,19 +335,6 @@ class Cube:
     
     def get_state(self):
         
-        # state=np.zeros(shape=(3*self.size,4*self.size))
-        # cube_array = self.cube_to_array()
-        # pf_pos = [[1,2],[0,1],[1,1],[1,0],[2,1],[1,3]]
-        # pf_r = [[[1,0,0],[0,1,0]],[[0,-1,self.size-1],[-1,0,self.size-1]],[[0,1,0],[-1,0,self.size-1]],[[1,0,0],[0,-1,self.size-1]],[[0,1,0],[-1,0,self.size-1]],[[0,1,0],[1,0,0]]]
-
-        # cube_array_index=0
-        # for face_num in range(Faces.face_count):
-        #     for i in range(self.size):
-        #         for j in range(self.size):
-        #             x=pf_pos[face_num][0]*self.size + i*pf_r[face_num][0][0] + j*pf_r[face_num][0][1] + pf_r[face_num][0][2]
-        #             y=pf_pos[face_num][1]*self.size + i*pf_r[face_num][1][0] + j*pf_r[face_num][1][1] + pf_r[face_num][1][2]
-        #             state[x][y]=cube_array[cube_array_index]+1
-        #             cube_array_index+=1
         state=np.zeros(shape=(self.size,self.size,self.size,Faces.face_count))
         center_offset = (self.size-1)/2
         for x in range(self.size):
@@ -378,6 +381,7 @@ class Cube:
 
 if __name__ == "__main__":
     cube_3x3x3 = Cube('3x3x3')
-    
-    cube_3x3x3.execute(cube_3x3x3.generate_scramble(100))
+    scram = cube_3x3x3.generate_scramble(100)
+    print(scram)
+    cube_3x3x3.execute(scram)
     print(cube_3x3x3.cube_to_array())

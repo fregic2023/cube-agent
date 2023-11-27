@@ -285,6 +285,7 @@ class Cube:
 
     def reverse_execute(self,moves: str):
         move_array = moves.rstrip().split(' ')
+        move_array.reverse()
         for move in move_array:
             move_degree = notation_dict[move[1:]]
             if move_degree == 1: move_degree = 3
@@ -384,4 +385,5 @@ if __name__ == "__main__":
     scram = cube_3x3x3.generate_scramble(100)
     print(scram)
     cube_3x3x3.execute(scram)
+    cube_3x3x3.reverse_execute(scram)
     print(cube_3x3x3.cube_to_array())

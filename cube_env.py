@@ -342,13 +342,13 @@ class Cube:
             for y in range(self.size):
                 for z in range(self.size):
                     piece = self.get_holder_by_pos(Position(x-center_offset,y-center_offset,z-center_offset)).piece
-                    # print(piece.color)
+
                     for face in range(Faces.face_count):
                         dir_color = piece.dir_color(Faces.face_array[face].dir)
                         state[x][y][z][face]=Faces.color_to_int[dir_color]
-                        
 
         return state
+
     def generate_scramble(self,length):
         scramble=""
         last_move=None

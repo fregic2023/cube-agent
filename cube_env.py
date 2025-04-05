@@ -379,11 +379,18 @@ class Cube:
 
     
 #%%
-
 if __name__ == "__main__":
     cube_3x3x3 = Cube('3x3x3')
-    scram = cube_3x3x3.generate_scramble(100)
-    print(scram)
-    cube_3x3x3.execute(scram)
-    cube_3x3x3.reverse_execute(scram)
-    print(cube_3x3x3.cube_to_array())
+    face = 0
+    while True:
+        state = cube_3x3x3.get_state()
+
+        print(state[:, :, :, face])
+        print()
+
+        action = input('action: ')
+        if action.isdigit():
+            face = int(action)
+
+        else:
+            cube_3x3x3.execute(action)
